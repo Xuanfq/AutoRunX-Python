@@ -1,0 +1,16 @@
+{
+    "id": "",
+    "name": "结束",
+    "node_name": "ctrl-end",
+    "node_type": "end",
+    "pre_edge_id": [],
+    "nxt_edge_id": [],
+    "input": {
+    },
+    "input_type": {
+    },
+    "output": {
+    },
+    "output_type": {
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "common": {
+        "aop": {
+            "AOP_MODULE_NAME":"",
+            "AOP_LOG_FILE":""
+        },
+        "log": {
+            "LOG_MODULE_NAME":"",
+            "COMMON_LOG_FILE":"",
+            "FUNC_LOG_FILE":""
+        }
+    },
+    "graph":{
+        "node_list":[{
+            "id": "xxx",
+            "name": "xxx",
+            "node_name": "node-xxx-2109201-xxx-0_0_1", 
+            "node_type": "default",
+            "pre_edge_id": ["xxx"],
+            "nxt_edge_id": ["xxx"],
+            "input":{
+        
+            },
+            "output":{
+                
+            }
+        }],
+        "edge_list":[{
+            "id": "yyy",
+            "name": "",
+            "pre_id": "yyy",
+            "nxt_id": "yyy"
+        }]
+    }
+}

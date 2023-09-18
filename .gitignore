@@ -1,0 +1,16 @@
+# build result
+/autorunx.egg-info
+/build
+/dist
+
+# temp/debug file
+*.log
+*.bak
+*.bk
+/__pycache__
+**/__pycache__
+/test
+**/test
+
+# vscode editor file
+/.vscode
