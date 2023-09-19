@@ -69,8 +69,26 @@ python setup.py develop
 ```
 
 
+## Release To PyPi
 
+1. Register PyPi account and get the api token.
+2. Create `~/.pypirc` (or `C:/User/${yourname}/.pypirc`) file and edit:
+```ini
+[distutils]
+index-servers=pypi
 
+[pypi]
+username=__token__
+password=your_token_input_here
+```
+
+3. Upload
+
+Before uploading, you need to biuld first.
+
+```
+twine upload dist/*   # upload all files under dist folder
+```
 
 
 
