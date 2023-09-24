@@ -27,18 +27,18 @@ def generate_id(**kwargs):
     return id
 
 
-def create_file(**kwargs):
+def create_node(**kwargs):
     # Required parameters
     id=generate_id(**kwargs)
     
     # copy example and rename
     import shutil
-    shutil.copy("cli/lib/flowfunction/func-example-file.py",'lib/flowfunction/{}.py'.format(id))
+    shutil.copy("cli/lib/flowfunction/func-node-example-file.py",'lib/flowfunction/{}.py'.format(id))
 
 
 if __name__=='__main__':
     print("CLI start...")
-    create_file(name="test01",version="0.0.1")
+    create_node(name="test01",version="0.0.1")
 
     
 
