@@ -24,6 +24,7 @@ def init_data_center(**kwargs):
     global data_center
     DATA_CENTER_MODULE_NAME="lib.system.data_center"
     data_center=import_module(DATA_CENTER_MODULE_NAME)
+    data_center.init()
     
 
 
@@ -39,6 +40,7 @@ def init_node_center(**kwargs):
     global node_center
     NODE_CENTER_MODULE_NAME="lib.system.node_center"
     node_center=import_module(NODE_CENTER_MODULE_NAME)
+    node_center.init()
 
 
 
