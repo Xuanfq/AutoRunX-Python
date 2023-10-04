@@ -22,8 +22,8 @@
 │  │  └─...
 │  ├─dataio
 │  │  ├─dtio-i-bool
-│  │  |  ├─config.json
-│  │  |  └─dtio-i-bool.md
+│  │  |  ├─config.json  # configuration file
+│  │  |  └─dtio-i-bool.md  # instruction readme text
 │  │  └─...
 │  ├─dataprocess
 │  │  ├─dtpc-abs

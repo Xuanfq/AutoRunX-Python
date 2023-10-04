@@ -1,6 +1,0 @@
-{
-    "id": "edge id",
-    "name": "node name, user's personal tag",
-    "pre_id": "edge's start point, such node id, data id",
-    "nxt_id": "edge's end point, such node id, data nxt_id"
-}
