@@ -21,15 +21,15 @@ def generate_node_list_config_for_web(doc_root):
         'nodeList':get_node_list_config(os.path.join(doc_root,"dataio"))
     },{
         'type':'dtpc',
-        'name':'输入输出节点',
+        'name':'数据处理节点',
         'nodeList':get_node_list_config(os.path.join(doc_root,"dataprocess"))
     },{
         'type':'ctrl',
-        'name':'输入输出节点',
+        'name':'程序控制节点',
         'nodeList':get_node_list_config(os.path.join(doc_root,"flowcontrol"))
     },{
         'type':'func',
-        'name':'输入输出节点',
+        'name':'程序功能节点',
         'nodeList':get_node_list_config(os.path.join(doc_root,"flowfunction"))
     }]  
     with open(os.path.join(sys.path[0],'nodeData.json'),'w',encoding='utf-8') as f:
