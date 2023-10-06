@@ -11,7 +11,7 @@ with open(os.path.join(basedir, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='autorunx',
-    version='1.0.0',
+    version='1.0.1',
     author='Xuanfq',
     author_email='2624208682@qq.com',
     license='MIT',
