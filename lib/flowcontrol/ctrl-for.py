@@ -6,7 +6,7 @@ import copy
 
 def run(**kwargs):
     # print("control for...")
-    node_config=copy.deepcopy(globals.engine.runnint_node_config)
+    node_config=kwargs["_config"]
     start_index=0
     end_index=5
     step=1
@@ -22,7 +22,7 @@ def run(**kwargs):
     # find edge and cover config
     for key in globals.engine.edges_config:
         edge=globals.engine.edges_config[key]
-        if edge["pre_id"]=="{}.output.loop_edge_id".format(globals.engine.running_node_id):
+        if edge["pre_id"]=="{}.output.loop_edge_id".format(node_config["id"]):
             loop_edge_id=key
             break
     # loop 
@@ -33,13 +33,13 @@ def run(**kwargs):
         cur_node_result={"index":index}
         globals.engine.put_node_linkout_data(node_config["id"],cur_node_result)
         if loop_node_id is not None:
-            globals.engine.flow(loop_node_id)
+            globals.engine.handle_flow_node(loop_node_id)
     # loop end. flow next node
     if "nxt_edge_id" not in node_config or len(node_config["nxt_edge_id"])<=0:
         return
     edge_id=node_config["nxt_edge_id"][0]
     if edge_id in globals.engine.edges_config:
-        globals.engine.flow(globals.engine.edges_config[edge_id]["nxt_id"])
+        globals.engine.handle_flow_node(globals.engine.edges_config[edge_id]["nxt_id"])
     return {}
 
 

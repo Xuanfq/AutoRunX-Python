@@ -85,19 +85,29 @@
 - arx
 - input
 - output
+- flowcontrol
+- flowfunction
 - ctrl
 - func
 - dataio
 - dataprocess
 - dtpc
 - dtio
+- eventreceive
+- eventtransmit
+- evrx
+- evtx
 - node
 - data
 - globals
+- _* (*为任意一个或多个字符)
 - ...
 
 
 
+## 代码规范
+
+- 严格模仿例子进行代码的书写
 
 
 

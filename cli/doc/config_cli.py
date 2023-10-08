@@ -31,6 +31,14 @@ def generate_node_list_config_for_web(doc_root):
         'type':'func',
         'name':'程序功能节点',
         'nodeList':get_node_list_config(os.path.join(doc_root,"flowfunction"))
+    },{
+        'type':'evrx',
+        'name':'事件发生节点',
+        'nodeList':get_node_list_config(os.path.join(doc_root,"eventreceive"))
+    },{
+        'type':'evtx',
+        'name':'事件触发节点',
+        'nodeList':get_node_list_config(os.path.join(doc_root,"eventtransmit"))
     }]  
     with open(os.path.join(sys.path[0],'nodeData.json'),'w',encoding='utf-8') as f:
         f.write(json.dumps(node_data,ensure_ascii=False))

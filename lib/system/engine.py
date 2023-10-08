@@ -1,6 +1,7 @@
 
 import sys,os
 import globals
+from threading import Lock
 
 import copy
 
@@ -10,23 +11,21 @@ edges_config={}
 
 flow_nodes_config={}
 data_nodes_config={}
-
-start_node_config=None  # only one
-end_node_config=None  # only one
+event_nodes_config={}
 
 dtio_nodes_config={}
 dtpc_nodes_config={}
 ctrl_nodes_config={}
 func_nodes_config={}
+evrx_nodes_config={}
+evtx_nodes_config={}
 
 nodes_link_input={}  # node 输入参数(input)中被链接的参数名。 key:node_id-->value:param_list
 nodes_link_input_sourcemapping={}  # node 输入参数(input)中被链接的参数值数据来源。key:node_id1.input.param_name-->value:node_id2.output.param_name
 
 
 is_active=False
-running_node_id=""
-runnint_node_config=None
-
+is_active_lock=Lock()
 
 
 def init(**kwargs):
@@ -48,16 +47,16 @@ def init(**kwargs):
     if "edge_config" in kwargs:
         edges_config=kwargs["edge_config"]
     
-    global start_node_config,end_node_config,flow_nodes_config,data_nodes_config
-    global dtio_nodes_config,dtpc_nodes_config,ctrl_nodes_config,func_nodes_config
+    global flow_nodes_config,data_nodes_config,event_nodes_config
+    global dtio_nodes_config,dtpc_nodes_config,ctrl_nodes_config,func_nodes_config,evtx_nodes_config,evrx_nodes_config
 
     for key in nodes_config:
-        if nodes_config[key]["node_type"]=="start":
-            flow_nodes_config[key]=nodes_config[key]
-            start_node_config=nodes_config[key]
-        elif nodes_config[key]["node_type"]=="end":
-            flow_nodes_config[key]=nodes_config[key]
-            end_node_config=nodes_config[key]
+        if nodes_config[key]["node_type"]=="evrx":
+            evrx_nodes_config[key]=nodes_config[key]
+            event_nodes_config[key]=nodes_config[key]
+        elif nodes_config[key]["node_type"]=="evtx":
+            evtx_nodes_config[key]=nodes_config[key]
+            event_nodes_config[key]=nodes_config[key]
         elif nodes_config[key]["node_type"]=="dtio":
             data_nodes_config[key]=nodes_config[key]
             dtio_nodes_config[key]=nodes_config[key]
@@ -89,79 +88,83 @@ def init(**kwargs):
 
 
 def start(**kwargs):
-    data_start()
-    flow_start()
+    global is_active
+    with is_active_lock:
+        is_active=True
+    init_data()
+    # start events
+    for id in evrx_nodes_config:
+        handle_flow_node(id)
 
 
-def data_start(**kwargs):
+def stop(**kwargs):
+    global is_active
+    with is_active_lock:
+        is_active=False
+    # stop events
+    
+
+
+def init_data(**kwargs):
     node_to_be_run=[_ for _ in data_nodes_config]
     while len(node_to_be_run)>0:
         length=len(node_to_be_run)
         for id in copy.deepcopy(node_to_be_run):
             if not is_node_linkin_data_ready(id):
                 continue
-            data(id)
+            handle_data_node(id)
             node_to_be_run.remove(id)
         if length==len(node_to_be_run):
-            break    
+            break
 
 
-def flow_start(**kwargs):
-    global is_active
-    is_active=True
-    flow(start_node_config["id"])
-
-
-def flow_end(**kwargs):
-    global is_active
-    is_active=False
-    # exit()
-
-
-def flow(id,**kwargs):
-    if id not in flow_nodes_config or not is_active:
+def handle_flow_node(id,**kwargs):
+    if id not in flow_nodes_config and id not in event_nodes_config or not is_active:
         # is not flow about
         return
     # load input params
     node_config=copy.deepcopy(nodes_config[id])
-    if not is_node_linkin_data_ready(id):
-        print("{}.{}: Error!!! Node input data missing!!!".format(id,node_config["node_name"]))
-        return
-    input_data=get_node_linkin_data(id)
-    node_config["input"]={**node_config["input"],**input_data}  # Notice the order, input_data must be at the end
-    # print("node_input_data",node_config["input"],input_data)
-    # node start
-    node=globals.node_center.get_or_generate(id,node_config["node_name"])
-    @globals.aop(id=id,name=node_config["node_name"])
-    def node_run(*args,**kwargs):
-        global running_node_id,runnint_node_config
-        tmp_running_node_id=running_node_id
-        tmp_runnint_node_config=runnint_node_config
-        running_node_id=id
-        runnint_node_config=copy.deepcopy(nodes_config[id])
-        results = node.run(*args,**kwargs)
-        running_node_id=tmp_running_node_id
-        runnint_node_config=tmp_runnint_node_config
-        return results
-    results=node_run(**node_config["input"])
-    # store node and keep alive
-    if results is None or not isinstance(results,dict):
-        results={}
-    if "keep_alive" in results and results["keep_alive"]==True:
-        globals.node_center.put(id,node)
-    # store output params
-    put_node_linkout_data(id,results)
-    # start next node
-    if  id in ctrl_nodes_config or id == start_node_config["id"] or (end_node_config is not None and id == end_node_config["id"]):
-        return
-    if "nxt_edge_id" not in node_config or len(node_config["nxt_edge_id"])<=0:
-        return
-    edge_id=node_config["nxt_edge_id"][0]
-    if edge_id in edges_config:
-        flow(edges_config[edge_id]["nxt_id"])
+    if id in event_nodes_config:
+        # handle event
+        node=globals.node_center.get_or_generate_put(node_config["node_name"],node_config["node_name"])  # event node is single
+        @globals.aop(id=id,name=node_config["node_name"])
+        def node_run(*args,**kwargs):
+            results = node.run(_config=copy.deepcopy(nodes_config[id]),*args,**kwargs)
+            return results
+        results=node_run(**node_config["input"])
+    else:
+        # handle flow
+        if not is_node_linkin_data_ready(id):
+            print("{}.{}: Error!!! Node input data missing!!!".format(id,node_config["node_name"]))
+            return
+        input_data=get_node_linkin_data(id)
+        node_config["input"]={**node_config["input"],**input_data}  # Notice the order, input_data must be at the end
+        # print("node_input_data",node_config["input"],input_data)
+        # node start
+        node=globals.node_center.get_or_generate(id,node_config["node_name"])
+        @globals.aop(id=id,name=node_config["node_name"])
+        def node_run(*args,**kwargs):
+            results = node.run(_config=copy.deepcopy(nodes_config[id]),*args,**kwargs)
+            return results
+        results=node_run(**node_config["input"])
+        # store node and keep alive
+        if results is None or not isinstance(results,dict):
+            results={}
+        if "keep_alive" in results and results["keep_alive"]==True:
+            globals.node_center.put(id,node)
+        # store output params
+        put_node_linkout_data(id,results)
+        # start next node
+        if  id in ctrl_nodes_config:
+            return
+        if "nxt_edge_id" not in node_config or len(node_config["nxt_edge_id"])<=0:
+            return
+        edge_id=node_config["nxt_edge_id"][0]
+        if edge_id in edges_config:
+            handle_flow_node(edges_config[edge_id]["nxt_id"])
 
 
-def data(id,**kwargs):
+def handle_data_node(id,**kwargs):
     if id not in dtpc_nodes_config and id not in dtio_nodes_config:
         # is not data about
         return
@@ -175,12 +178,7 @@ def data(id,**kwargs):
     node=globals.node_center.get_or_generate(id,node_config["node_name"])
     @globals.aop(id=id,name=node_config["node_name"])
     def node_run(*args,**kwargs):
-        global running_node_id,runnint_node_config
-        running_node_id=id
-        runnint_node_config=copy.deepcopy(nodes_config[id])
-        results = node.run(*args,**kwargs)
-        running_node_id=""
-        runnint_node_config=None
+        results = node.run(_config=copy.deepcopy(nodes_config[id]),*args,**kwargs)
         return results
     results=node_run(**node_config["input"])
     # store node and keep alive
@@ -237,7 +235,7 @@ def put_node_linkout_data(id,output_data,**kwargs):
         for dtpc_id in copy.deepcopy(dtpc_to_be_run):
             if not is_node_linkin_data_ready(dtpc_id):
                 continue
-            data(dtpc_id)
+            handle_data_node(dtpc_id)
             dtpc_to_be_run.remove(dtpc_id)
         if length==len(dtpc_to_be_run):
             break

@@ -8,6 +8,8 @@ sys.path.append(os.path.join(sys.path[0],'lib/dataio'))
 sys.path.append(os.path.join(sys.path[0],'lib/dataprocess'))
 sys.path.append(os.path.join(sys.path[0],'lib/flowcontrol'))
 sys.path.append(os.path.join(sys.path[0],'lib/flowfunction'))
+sys.path.append(os.path.join(sys.path[0],'lib/eventreceive'))
+sys.path.append(os.path.join(sys.path[0],'lib/eventtransmit'))
 sys.path.append(os.path.join(sys.path[0],'lib/system'))
 
 from importlib import import_module
