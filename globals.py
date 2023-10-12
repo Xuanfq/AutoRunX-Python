@@ -52,30 +52,30 @@ def init_node_center(**kwargs):
 # log module
 log_module=None
 common_log=None
-func_log=None
+log=None
 
 def init_log(**kwargs):
     """log module"""
     # get config and ini constant
-    # global COMMON_LOG_FILE,FUNC_LOG_FILE,LOG_MODULE_NAME
+    # global COMMON_LOG_FILE,LOG_FILE,LOG_MODULE_NAME
     LOG_MODULE_NAME="system.log"
     COMMON_LOG_FILE="log/common.log"      # common log, all(log) in one.
-    FUNC_LOG_FILE="log/log.log"        # pure log, node log output
+    LOG_FILE="log/log.log"        # pure log, node log output
     if "LOG_MODULE_NAME" in kwargs:
         LOG_MODULE_NAME=kwargs['LOG_MODULE_NAME']
     if "COMMON_LOG_FILE" in kwargs:
         COMMON_LOG_FILE=kwargs['COMMON_LOG_FILE']
-    if "FUNC_LOG_FILE" in kwargs:
-        FUNC_LOG_FILE=kwargs['FUNC_LOG_FILE']
+    if "LOG_FILE" in kwargs:
+        LOG_FILE=kwargs['LOG_FILE']
     # import module
     global log_module
     log_module=import_module(LOG_MODULE_NAME)
     # ini module
-    log_module.init(COMMON_LOG_FILE=COMMON_LOG_FILE,FUNC_LOG_FILE=FUNC_LOG_FILE)
+    log_module.init(COMMON_LOG_FILE=COMMON_LOG_FILE,LOG_FILE=LOG_FILE)
     # ini module function
-    global common_log,func_log
+    global common_log,log
     common_log=log_module.common_log
-    func_log=log_module.func_log
+    log=log_module.log
 
 
 

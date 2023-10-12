@@ -6,16 +6,16 @@ import datetime
 
 
 COMMON_LOG_FILE="log/common.log"      # common log, all(log) in one.
-FUNC_LOG_FILE="log/log.log"        # pure log, func log output
+LOG_FILE="log/log.log"        # pure log, func log output
 
 
 def init(**kwargs):
-    global FUNC_LOG_FILE,COMMON_LOG_FILE
+    global LOG_FILE,COMMON_LOG_FILE
     if "COMMON_LOG_FILE" in kwargs:
         COMMON_LOG_FILE=kwargs['COMMON_LOG_FILE']
-    if "FUNC_LOG_FILE" in kwargs:
-        FUNC_LOG_FILE=kwargs['FUNC_LOG_FILE']
-    for filefullpath in [COMMON_LOG_FILE,FUNC_LOG_FILE]:
+    if "LOG_FILE" in kwargs:
+        LOG_FILE=kwargs['LOG_FILE']
+    for filefullpath in [COMMON_LOG_FILE,LOG_FILE]:
         if len(filefullpath.split('/'))>1:
             [path,filename] = os.path.split(filefullpath)
             # print(path,filename)
@@ -31,7 +31,7 @@ def common_log(**kwargs):
         # print(msg,end="")
 
 
-def func_log(**kwargs):
+def log(**kwargs):
     """
     kw:
     - msg: must, log message
@@ -41,7 +41,7 @@ def func_log(**kwargs):
     msg="[{}]: {}\n".format(datetime.datetime.now(),msg)
     print(msg,end="")
     # func log
-    with open(FUNC_LOG_FILE,"+a",encoding="utf-8") as f:
+    with open(LOG_FILE,"+a",encoding="utf-8") as f:
         f.write(msg)
     # common log
     common_log(msg=msg)
@@ -56,7 +56,7 @@ def func_log(**kwargs):
 
 
 # init(COMMON_LOG_FILE="log/common-log.log")
-# func_log(msg="hello func!")
+# log(msg="hello func!")
 
 
 

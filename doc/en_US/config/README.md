@@ -71,7 +71,7 @@ The process of program execution is mainly represented by program flow chart, wh
         "log": {
             "LOG_MODULE_NAME": "log",
             "COMMON_LOG_FILE": "log/common.log",
-            "FUNC_LOG_FILE": "log/func.log"
+            "LOG_FILE": "log/func.log"
         }
     },
     "graph": {

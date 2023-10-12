@@ -26,7 +26,7 @@ Can be used for code debugging, etc.
 Called when the module is initialized
 
 ```python
-init(COMMON_LOG_FILE="log/common.log",FUNC_LOG_FILE="log/func.log")
+init(COMMON_LOG_FILE="log/common.log",LOG_FILE="log/func.log")
 ```
 
 
@@ -46,7 +46,7 @@ Developers should not call this method, but should trigger it through func _ log
 
 
 
-### func_log()
+### log()
 
 **Required parameter**
 
@@ -61,7 +61,7 @@ Developers should not call this method, but should trigger it through func _ log
 **Usage**
 
 ```python
-func_log(msg="func test start...")
+log(msg="func test start...")
 ```
 
 
@@ -71,13 +71,13 @@ func_log(msg="func test start...")
 
 ```python
 # init
-init(COMMON_LOG_FILE="log/common.log",FUNC_LOG_FILE="log/func.log")
+init(COMMON_LOG_FILE="log/common.log",LOG_FILE="log/func.log")
 ```
 
 
 ```python
 # func log
-func_log(msg="func test start...")
+log(msg="func test start...")
 ```
 
 
