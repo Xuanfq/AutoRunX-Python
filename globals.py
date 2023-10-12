@@ -10,7 +10,7 @@ sys.path.append(os.path.join(sys.path[0],'lib/flowcontrol'))
 sys.path.append(os.path.join(sys.path[0],'lib/flowfunction'))
 sys.path.append(os.path.join(sys.path[0],'lib/eventreceive'))
 sys.path.append(os.path.join(sys.path[0],'lib/eventtransmit'))
-sys.path.append(os.path.join(sys.path[0],'lib/system'))
+sys.path.append(os.path.join(sys.path[0],'/system'))
 
 from importlib import import_module
 
@@ -24,7 +24,7 @@ data_center=None
 
 def init_data_center(**kwargs):
     global data_center
-    DATA_CENTER_MODULE_NAME="lib.system.data_center"
+    DATA_CENTER_MODULE_NAME="system.data_center"
     data_center=import_module(DATA_CENTER_MODULE_NAME)
     data_center.init()
     
@@ -40,7 +40,7 @@ node_center=None
 
 def init_node_center(**kwargs):
     global node_center
-    NODE_CENTER_MODULE_NAME="lib.system.node_center"
+    NODE_CENTER_MODULE_NAME="system.node_center"
     node_center=import_module(NODE_CENTER_MODULE_NAME)
     node_center.init()
 
@@ -58,7 +58,7 @@ def init_log(**kwargs):
     """log module"""
     # get config and ini constant
     # global COMMON_LOG_FILE,FUNC_LOG_FILE,LOG_MODULE_NAME
-    LOG_MODULE_NAME="lib.system.log"
+    LOG_MODULE_NAME="system.log"
     COMMON_LOG_FILE="log/common.log"      # common log, all(log) in one.
     FUNC_LOG_FILE="log/log.log"        # pure log, node log output
     if "LOG_MODULE_NAME" in kwargs:
@@ -90,7 +90,7 @@ def init_aop(**kwargs):
     """aop module"""
     # get config and ini constant
     # global AOP_LOG_FILE,AOP_MODULE_NAME
-    AOP_MODULE_NAME="lib.system.aop"
+    AOP_MODULE_NAME="system.aop"
     AOP_LOG_FILE="log/aop.log"         # aop log, use to debug or record program flow
     if "AOP_MODULE_NAME" in kwargs:
         AOP_MODULE_NAME=kwargs['AOP_MODULE_NAME']
@@ -114,7 +114,7 @@ def init_aop(**kwargs):
 engine=None
 def init_engine(**kwargs):
     global engine
-    ENGINE_MODULE_NAME="lib.system.engine"
+    ENGINE_MODULE_NAME="system.engine"
     engine=import_module(ENGINE_MODULE_NAME)
     # params: graph:{node_list:[],edge_list:[]}
     engine.init(**kwargs)

@@ -46,7 +46,7 @@ def generate_node_list_config_for_web(doc_root):
 
 
 if __name__=='__main__':
-    generate_node_list_config_for_web(os.path.join(sys.path[0],"../../doc/"))
+    generate_node_list_config_for_web(os.path.join(sys.path[0],"../../doc/zh_CN/lib"))
 
 
 

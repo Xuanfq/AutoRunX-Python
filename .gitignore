@@ -2,6 +2,7 @@
 /autorunx.egg-info
 /build
 /dist
+/log
 
 # temp/debug file
 *.log
