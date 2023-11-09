@@ -16,5 +16,6 @@
         "bool": "条件: 布尔"
     },
     "output": {},
-    "output_type": {}
+    "output_type": {},
+    "output_intro": {}
 }

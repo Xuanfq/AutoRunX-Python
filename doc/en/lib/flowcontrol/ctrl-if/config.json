@@ -16,5 +16,6 @@
         "bool": "condition: bool"
     },
     "output": {},
-    "output_type": {}
+    "output_type": {},
+    "output_intro": {}
 }

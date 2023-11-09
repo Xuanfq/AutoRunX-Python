@@ -38,5 +38,6 @@
         "index": "选择索引: 数值"
     },
     "output": {},
-    "output_type": {}
+    "output_type": {},
+    "output_intro": {}
 }

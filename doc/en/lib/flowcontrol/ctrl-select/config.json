@@ -38,5 +38,6 @@
         "index": "index: number"
     },
     "output": {},
-    "output_type": {}
+    "output_type": {},
+    "output_intro": {}
 }
