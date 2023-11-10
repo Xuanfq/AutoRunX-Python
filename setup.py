@@ -9,9 +9,14 @@ long_description = None
 with open(os.path.join(basedir, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+packages = []
+packages.extend(["lib.{}".format(sub)
+                for sub in find_packages(where='lib', include=['*'])])
+packages.append('system')
+
 setup(
     name='autorunx',
-    version='1.1.0',
+    version='1.1.1',
     author='Xuanfq',
     author_email='2624208682@qq.com',
     license='MIT',
@@ -19,8 +24,7 @@ setup(
     description='AutoRunX is an open source low code framework.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=["lib.{}".format(sub)
-              for sub in find_packages(where='lib', include=['*'])],
+    packages=packages,
     py_modules=['autorunx', 'globals'],
     entry_points={
         'console_scripts': [
@@ -43,5 +47,5 @@ setup(
         # 目标 Python 版本
         'Programming Language :: Python :: 3.9',
     ],
-    keywords=['autorun','auto','run','automatic'],
+    keywords=['autorun', 'auto', 'run', 'automatic'],
 )
