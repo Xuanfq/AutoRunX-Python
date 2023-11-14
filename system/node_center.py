@@ -5,7 +5,7 @@ import globals
 import imp
 from threading import Lock
 
-user_node_set = set()
+lib_node_set = set()
 
 """
 key: node id
@@ -17,15 +17,19 @@ node_dict_lock = Lock()
 
 def init(**kwargs):
     # init user_node_set
-    global user_node_set
+    global lib_node_set
     import os
     lib_root = os.path.join(os.path.dirname(__file__), "../lib/")
     node_class_paths = [os.path.join(lib_root, type) for type in [
         'dataio', 'dataprocess', 'flowcontrol', 'flowfunction', 'eventreceive', 'eventtransmit']]
     for node_root in node_class_paths:
-        for node_name in os.listdir(node_root):
-            if os.path.isfile(os.path.join(node_root, node_name)) and node_name != '__init__.py':
-                user_node_set.add(node_name.replace('.py', ''))
+        for node_name_file in os.listdir(node_root):
+            if os.path.isfile(os.path.join(node_root, node_name_file)) and node_name_file != '__init__.py':
+                node_name=node_name_file.replace('.py', '')
+                if node_name not in lib_node_set:
+                    lib_node_set.add(node_name)
+                else:
+                    raise Exception('Module or node repeat: {}'.format(node_name))
     return None
 
 
@@ -52,7 +56,7 @@ def generate(key, **kwargs):
     """
     key: node_name, node's filename but bot include extension, module name
     """
-    if key in user_node_set:
+    if key in lib_node_set:
         return imp.reload(globals.import_module(key))
     else:
         raise Exception('No "{}" module or node'.format(key))
