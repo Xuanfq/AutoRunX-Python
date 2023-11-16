@@ -1,6 +1,7 @@
 
 import sys
 import os
+import glob
 import globals
 import imp
 from threading import Lock
@@ -16,7 +17,8 @@ node_dict_lock = Lock()
 
 
 def init(**kwargs):
-    # init user_node_set
+    # init lib_node_set
+    USER_LIB_PATH = 'USER_LIB_PATH'
     global lib_node_set
     import os
     lib_root = os.path.join(os.path.dirname(__file__), "../lib/")
@@ -25,11 +27,26 @@ def init(**kwargs):
     for node_root in node_class_paths:
         for node_name_file in os.listdir(node_root):
             if os.path.isfile(os.path.join(node_root, node_name_file)) and node_name_file != '__init__.py':
-                node_name=node_name_file.replace('.py', '')
+                node_name = node_name_file.replace('.py', '')
                 if node_name not in lib_node_set:
                     lib_node_set.add(node_name)
                 else:
-                    raise Exception('Module or node repeat: {}'.format(node_name))
+                    raise Exception(
+                        'Module or node repeat: {}'.format(node_name))
+    if USER_LIB_PATH in kwargs:
+        lib_path = kwargs[USER_LIB_PATH]
+        if not os.path.isabs(lib_path):
+            lib_path = os.path.join(os.getcwd(), lib_path)
+        for path in glob.glob(lib_path, recursive=False):
+            sys.path.append(path)
+            for node_name_file in os.listdir(path):
+                if os.path.isfile(os.path.join(path, node_name_file)) and node_name_file != '__init__.py':
+                    node_name = node_name_file.replace('.py', '')
+                    if node_name not in lib_node_set:
+                        lib_node_set.add(node_name)
+                    else:
+                        raise Exception(
+                            'Custom module or node repeat: {}'.format(node_name))
     return None
 
 

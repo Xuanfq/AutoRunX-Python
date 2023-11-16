@@ -1,168 +1,137 @@
-# global 
-
-import sys,os
-# or all platform. On window platform, sys.path[0] is same with basedir below:
-basedir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0,basedir)
-sys.path.append(os.path.join(sys.path[0],'lib/dataio'))
-sys.path.append(os.path.join(sys.path[0],'lib/dataprocess'))
-sys.path.append(os.path.join(sys.path[0],'lib/flowcontrol'))
-sys.path.append(os.path.join(sys.path[0],'lib/flowfunction'))
-sys.path.append(os.path.join(sys.path[0],'lib/eventreceive'))
-sys.path.append(os.path.join(sys.path[0],'lib/eventtransmit'))
-sys.path.append(os.path.join(sys.path[0],'/system'))
+# global
 
 from importlib import import_module
+import sys
+import os
+# or all platform. On window platform, sys.path[0] is same with basedir below:
+basedir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, basedir)
+sys.path.append(os.path.join(sys.path[0], 'lib/dataio'))
+sys.path.append(os.path.join(sys.path[0], 'lib/dataprocess'))
+sys.path.append(os.path.join(sys.path[0], 'lib/flowcontrol'))
+sys.path.append(os.path.join(sys.path[0], 'lib/flowfunction'))
+sys.path.append(os.path.join(sys.path[0], 'lib/eventreceive'))
+sys.path.append(os.path.join(sys.path[0], 'lib/eventtransmit'))
+sys.path.append(os.path.join(sys.path[0], '/system'))
 
 
 # ====================================== data_center module ======================================
 
 
 # data center
-data_center=None
+data_center = None
 
 
 def init_data_center(**kwargs):
     global data_center
-    DATA_CENTER_MODULE_NAME="system.data_center"
-    data_center=import_module(DATA_CENTER_MODULE_NAME)
-    data_center.init()
-    
-
+    DATA_CENTER_MODULE_NAME = "system.data_center"
+    data_center = import_module(DATA_CENTER_MODULE_NAME)
+    data_center.init(**kwargs)
 
 
 # ====================================== node_center module ======================================
 
 
 # node center
-node_center=None
+node_center = None
 
 
 def init_node_center(**kwargs):
     global node_center
-    NODE_CENTER_MODULE_NAME="system.node_center"
-    node_center=import_module(NODE_CENTER_MODULE_NAME)
-    node_center.init()
-
+    NODE_CENTER_MODULE_NAME = "system.node_center"
+    node_center = import_module(NODE_CENTER_MODULE_NAME)
+    node_center.init(**kwargs)
 
 
 # ====================================== log module ======================================
 
 
 # log module
-log_module=None
-common_log=None
-log=None
+log_module = None
+common_log = None
+log = None
+
 
 def init_log(**kwargs):
     """log module"""
     # get config and ini constant
     # global COMMON_LOG_FILE,LOG_FILE,LOG_MODULE_NAME
-    LOG_MODULE_NAME="system.log"
-    COMMON_LOG_FILE="log/common.log"      # common log, all(log) in one.
-    LOG_FILE="log/log.log"        # pure log, node log output
-    if "LOG_MODULE_NAME" in kwargs:
-        LOG_MODULE_NAME=kwargs['LOG_MODULE_NAME']
-    if "COMMON_LOG_FILE" in kwargs:
-        COMMON_LOG_FILE=kwargs['COMMON_LOG_FILE']
-    if "LOG_FILE" in kwargs:
-        LOG_FILE=kwargs['LOG_FILE']
+    LOG_MODULE_NAME = "system.log"
     # import module
     global log_module
-    log_module=import_module(LOG_MODULE_NAME)
+    log_module = import_module(LOG_MODULE_NAME)
     # ini module
-    log_module.init(COMMON_LOG_FILE=COMMON_LOG_FILE,LOG_FILE=LOG_FILE)
+    log_module.init(**kwargs)
     # ini module function
-    global common_log,log
-    common_log=log_module.common_log
-    log=log_module.log
-
+    global common_log, log
+    common_log = log_module.common_log
+    log = log_module.log
 
 
 # ====================================== aop module ======================================
 
 
 # aop module
-aop_module=None
-aop=None
+aop_module = None
+aop = None
+
 
 def init_aop(**kwargs):
     """aop module"""
     # get config and ini constant
     # global AOP_LOG_FILE,AOP_MODULE_NAME
-    AOP_MODULE_NAME="system.aop"
-    AOP_LOG_FILE="log/aop.log"         # aop log, use to debug or record program flow
-    if "AOP_MODULE_NAME" in kwargs:
-        AOP_MODULE_NAME=kwargs['AOP_MODULE_NAME']
-    if "AOP_LOG_FILE" in kwargs:
-        AOP_LOG_FILE=kwargs['AOP_LOG_FILE']
+    AOP_MODULE_NAME = "system.aop"
     # import module
     global aop_module
-    aop_module=import_module(AOP_MODULE_NAME)
+    aop_module = import_module(AOP_MODULE_NAME)
     # ini module
-    aop_module.init(AOP_LOG_FILE=AOP_LOG_FILE)
+    aop_module.init(**kwargs)
     # ini module function
     global aop
-    aop=aop_module.aop
-
+    aop = aop_module.aop
 
 
 # ====================================== engine module ======================================
 
 
 # engine
-engine=None
+engine = None
+
+
 def init_engine(**kwargs):
     global engine
-    ENGINE_MODULE_NAME="system.engine"
-    engine=import_module(ENGINE_MODULE_NAME)
+    ENGINE_MODULE_NAME = "system.engine"
+    engine = import_module(ENGINE_MODULE_NAME)
     # params: graph:{node_list:[],edge_list:[]}
     engine.init(**kwargs)
-
 
 
 # ====================================== init & start ======================================
 
 
 def init(**kwargs):
-    init_data_center()
-    init_node_center()
-    if "common" in kwargs and "aop" in kwargs["common"]:
-        init_aop(**kwargs["common"]["aop"])
+    # print(kwargs)
+    if "system" in kwargs and "data_center" in kwargs["system"]:
+        init_data_center(**kwargs["system"]["data_center"])
+    else:
+        init_data_center()
+    if "system" in kwargs and "node_center" in kwargs["system"]:
+        init_node_center(**kwargs["system"]["node_center"])
+    else:
+        init_node_center()
+    if "system" in kwargs and "aop" in kwargs["system"]:
+        init_aop(**kwargs["system"]["aop"])
     else:
         init_aop()
-    if "common" in kwargs and "log" in kwargs["common"]:
-        init_log(**kwargs["common"]["log"])
+    if "system" in kwargs and "log" in kwargs["system"]:
+        init_log(**kwargs["system"]["log"])
     else:
         init_log()
     if "graph" in kwargs:
         init_engine(**kwargs["graph"])
     else:
         print("Error: Invalid profile!")
-    
+
 
 def start():
     engine.start()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

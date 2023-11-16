@@ -19,7 +19,7 @@ def init(**kwargs):
         AOP_LOG_FILE=kwargs['AOP_LOG_FILE']
     if "LOG_OPEN" in kwargs:
         LOG_OPEN=kwargs['LOG_OPEN']
-    if len(AOP_LOG_FILE.split('/'))>1:
+    if LOG_OPEN and len(AOP_LOG_FILE.split('/'))>1:
         [path,filename] = os.path.split(AOP_LOG_FILE)
         # print(path,filename)
         if not os.path.exists(path):
