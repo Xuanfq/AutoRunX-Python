@@ -1,5 +1,6 @@
 
-import sys,os
+import sys
+import os
 import globals
 
 from functools import wraps
@@ -8,31 +9,32 @@ import datetime
 
 
 # config
-AOP_LOG_FILE="log/aop.log"
-LOG_OPEN=True  # disable
-
+AOP_LOG_FILE = "log/aop.log"
+LOG_OPEN = True  # disable
 
 
 def init(**kwargs):
-    global AOP_LOG_FILE,LOG_OPEN
+    global AOP_LOG_FILE, LOG_OPEN
     if "AOP_LOG_FILE" in kwargs:
-        AOP_LOG_FILE=kwargs['AOP_LOG_FILE']
+        AOP_LOG_FILE = kwargs['AOP_LOG_FILE']
+    else:
+        AOP_LOG_FILE = os.path.join(globals.ENV_WORK_DIR, AOP_LOG_FILE)
     if "LOG_OPEN" in kwargs:
-        LOG_OPEN=kwargs['LOG_OPEN']
-    if LOG_OPEN and len(AOP_LOG_FILE.split('/'))>1:
-        [path,filename] = os.path.split(AOP_LOG_FILE)
+        LOG_OPEN = kwargs['LOG_OPEN']
+    if LOG_OPEN and len(AOP_LOG_FILE.split('/')) > 1:
+        [path, filename] = os.path.split(AOP_LOG_FILE)
         # print(path,filename)
         if not os.path.exists(path):
             os.makedirs(path)
 
 
 def log(msg):
-    msg="[{}][aop]: {}\n".format(datetime.datetime.now(),msg)
+    msg = "[{}][aop]: {}\n".format(datetime.datetime.now(), msg)
     if not LOG_OPEN:
         # print(msg,end="")
         return
     # aop log
-    with open(AOP_LOG_FILE,"+a",encoding="utf-8") as f:
+    with open(AOP_LOG_FILE, "+a", encoding="utf-8") as f:
         f.write(msg)
         # print(msg,end="")
     # common log
@@ -40,17 +42,18 @@ def log(msg):
         globals.common_log(msg=msg)
 
 
-def aop(id,name):
+def aop(id, name):
     def c(func):
         @wraps(func)
         def b(*args, **kwargs):
-            log('{}.{}  node id:     {}'.format(id,name,id))
-            log('{}.{}  node name:   {}'.format(id,name,name))
-            log('{}.{}  node params: args={}, kwargs={}'.format(id,name,args, kwargs))
-            log('{}.{}  node start...'.format(id,name))
+            log('{}.{}  node id:     {}'.format(id, name, id))
+            log('{}.{}  node name:   {}'.format(id, name, name))
+            log('{}.{}  node params: args={}, kwargs={}'.format(
+                id, name, args, kwargs))
+            log('{}.{}  node start...'.format(id, name))
             results = func(*args, **kwargs)
-            log('{}.{}  node end...'.format(id,name))
-            log('{}.{}  node return  results: {}'.format(id,name,results))
+            log('{}.{}  node end...'.format(id, name))
+            log('{}.{}  node return  results: {}'.format(id, name, results))
             return results
         return b
     return c
@@ -64,17 +67,3 @@ def aop(id,name):
 
 # print(a('A', 24, lang="en"))
 # print(a('B', 24, lang="ch"))
-
-
-
-
-
-
-
-
-
-
-
-
-
-

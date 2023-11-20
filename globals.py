@@ -15,8 +15,18 @@ sys.path.append(os.path.join(sys.path[0], 'lib/eventtransmit'))
 sys.path.append(os.path.join(sys.path[0], '/system'))
 
 
-# ====================================== data_center module ======================================
+# ====================================== global environment ======================================
 
+ENV_WORK_DIR = os.getcwd()
+
+
+def init_global_env(**kwargs):
+    global ENV_WORK_DIR
+    if 'ENV_WORK_DIR' in kwargs:
+        ENV_WORK_DIR = kwargs['ENV_WORK_DIR']
+
+
+# ====================================== data_center module ======================================
 
 # data center
 data_center = None
@@ -111,6 +121,8 @@ def init_engine(**kwargs):
 
 def init(**kwargs):
     # print(kwargs)
+    if "system" in kwargs and "global" in kwargs["system"]:
+        init_global_env(**kwargs["system"]["global"])
     if "system" in kwargs and "data_center" in kwargs["system"]:
         init_data_center(**kwargs["system"]["data_center"])
     else:

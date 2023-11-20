@@ -24,6 +24,10 @@ parser.add_argument('-l', '--system-node-lib-path',
                     required=False,
                     type=str,
                     help='set custom node library path')
+parser.add_argument('-w', '--system-work-dir',
+                    required=False,
+                    type=str,
+                    help='set working directory')
 parser.add_argument('--system-aop-log-file',
                     required=False,
                     type=str,
@@ -52,9 +56,11 @@ def main():
         config = None
         with open(config_path, "r", encoding="utf-8") as f:
             config = json.load(f)
-        config['system'] = {'node_center': {}, 'aop': {}, 'log': {}}
+        config['system'] = {'global':{}, 'node_center': {}, 'aop': {}, 'log': {}}
         if args.disable_config_file_system:
             config.pop('system', None)
+        if args.system_work_dir is not None:
+            config['system']['global']['ENV_WORK_DIR'] = args.system_work_dir
         if args.system_node_lib_path is not None:
             config['system']['node_center']['USER_LIB_PATH'] = args.system_node_lib_path
         if args.system_aop_log_file is not None:
