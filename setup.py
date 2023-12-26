@@ -16,7 +16,7 @@ packages.append('system')
 
 setup(
     name='autorunx',
-    version='1.1.2',
+    version='1.1.3',
     author='Xuanfq',
     author_email='2624208682@qq.com',
     license='MIT',

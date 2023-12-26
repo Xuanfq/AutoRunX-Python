@@ -44,7 +44,7 @@ def log(**kwargs):
     """
     msg = kwargs['msg']
     msg = "[{}]: {}\n".format(datetime.datetime.now(), msg)
-    print(msg, end="")
+    print(msg, end="", flush=True)
     # func log
     with open(LOG_FILE, "+a", encoding="utf-8") as f:
         f.write(msg)
