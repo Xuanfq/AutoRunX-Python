@@ -18,11 +18,11 @@ arx.run("config.json")
 
 2. Used in Linux Command
 ```sh
-autorunx -c "config.json"
+autorunx -h
 ```
 or
 ```sh
-arx -c "config.json"
+arx -h
 ```
 
 
