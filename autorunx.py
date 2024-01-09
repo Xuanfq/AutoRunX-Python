@@ -9,7 +9,7 @@ import json
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', '--version',
                     action='version',
-                    version='1.1.3',
+                    version='1.1.4',
                     help="checking version information"
                     )
 parser.add_argument('-f', '--config-file',

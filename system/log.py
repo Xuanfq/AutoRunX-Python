@@ -40,10 +40,27 @@ def log(**kwargs):
     """
     kw:
     - msg: must, log message
+    - is_new_line: True, optional, default True
+    - timestamp: True, optional, default True
+    - end: '\n', optional, default '\n'
     - second_log_file: optional
     """
+    is_new_line = True
+    timestamp = True
+    end = ''
     msg = kwargs['msg']
-    msg = "[{}]: {}\n".format(datetime.datetime.now(), msg)
+    if 'is_new_line' in kwargs:
+        is_new_line = kwargs['is_new_line']
+    if 'timestamp' in kwargs:
+        timestamp = kwargs['timestamp']
+    if 'end' in kwargs:
+        end = kwargs['end']
+    if timestamp:
+        msg = "[{}]: {}".format(datetime.datetime.now(), msg)
+    if is_new_line:
+        msg = "\n{}{}".format(msg, end)
+    else:
+        msg = "{}{}".format(msg, end)
     print(msg, end="", flush=True)
     # func log
     with open(LOG_FILE, "+a", encoding="utf-8") as f:
